@@ -23,23 +23,27 @@ class Lyrics_Scraper():
             song_list = list(map(lambda s: s.replace(' ', '-'), song_list))
             return song_list
 
-    def format_lyrics(song):
-        pass
+    def save_cleaned_lyrics(self, song_title, song_lyrics):
+        pattern = re.compile("^(?:\[[^\]]*\])|(?:[^a-zA-Z\s])$", re.I | re.M)
+        clean = re.sub(pattern, "", song_lyrics)
+        file_name = song_title + '.txt'
+        with open(file_name, "a+") as f:
+            f.write(clean)
+            print("file created successfully!")
 
-    def get_lyrics_for_song(self, song_title):
+    def get_raw_lyrics(self, song_title):
         # Create URL, get html, pull lyrics out of div class lyrics
         url = self.base_url + "/{}-{}-lyrics".format(self.artist, song_title)
         r = requests.get(url)
         html_content = r.text
         soup = BeautifulSoup(html_content, 'html5lib')
         results = soup.find('p')
-        lyrics = results.text
-        print(type(lyrics))
-        # for line in lyrics:
-        #     line.string.replace_with()
-        #  print(lyrics)
+        raw_lyrics = results.text
+        return raw_lyrics
+
 
 if __name__ == "__main__":
     x = Lyrics_Scraper("luke_bryan_songlist.txt")
-    song = x.get_song_list()[0]
-    print(x.get_lyrics_for_song(song))
+    song_title = x.get_song_list()[0]
+    song_lyrics = x.get_raw_lyrics(song_title)
+    x.save_lyrics(song_title, song_lyrics)
