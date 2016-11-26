@@ -24,7 +24,7 @@ class Lyrics_Scraper():
             return song_list
 
     def save_cleaned_lyrics(self, song_title, song_lyrics):
-        pattern = re.compile("^(?:\[[^\]]*\])|(?:[^a-zA-Z\s])$", re.I | re.M)
+        pattern = re.compile(r"(?:^\[[^\]]*\]$)|(?:[^a-zA-Z\s])", re.I | re.M)
         clean = re.sub(pattern, "", song_lyrics)
         file_name = song_title + '.txt'
         with open(file_name, "a+") as f:
